@@ -107,30 +107,42 @@ public class NetworkComponent extends Component {
                 }
             }
         });
-        StateUpdate update = new StateUpdate(seq,"shot","681f4eb322f7275fd1de93d4", list);
+        StateUpdate update = new StateUpdate(seq,"shot","681f41ff0464937d8065de93", list);
         return update;
     }
 
     private void sendStateUpdate(StateUpdate update) {
-        if (ws != null && ws.isOutputClosed() == false) {
+        if (ws != null && !ws.isOutputClosed() && !update.getStates().isEmpty()) {
+    
+            EntityState s = update.getStates().get(0); // 只取第一個實體
+    
             ObjectNode msg = mapper.createObjectNode();
-            msg.put("type", update.getType());
+            msg.put("type", "shot");
             msg.put("matchId", update.getMatchId());
-            msg.set("payload", mapper.valueToTree(update));
+            msg.put("seq", update.getSeq());
+    
+            ObjectNode payload = mapper.createObjectNode();
+            payload.put("id", s.getId());
+            payload.put("start_x", s.getX());
+            payload.put("start_y", s.getY());
+            payload.put("end_x", s.getX() + s.getVx()); // 模擬方向
+            payload.put("end_y", s.getY() + s.getVy());
+    
+            msg.set("payload", payload);
+            //System.out.println("json is = " + msg);
             ws.sendText(msg.toString(), true);
         }
     }
 
     private class WSListener implements WebSocket.Listener {
         @Override
-        public CompletionStage<?> onText(WebSocket webSocket,
-                CharSequence data, boolean last) {
+        public CompletionStage<?> onText(WebSocket webSocket, CharSequence data, boolean last) {
             try {
+                System.out.println("收到後端訊息: " + data);
+
                 JsonNode root = mapper.readTree(data.toString());
                 if ("state_update".equals(root.get("type").asText())) {
-                    StateUpdate upd = mapper.treeToValue(
-                            root.get("entities"), StateUpdate.class);
-                    // 收到別人的狀態 → 更新本地 (忽略自己)
+                    StateUpdate upd = mapper.treeToValue(root.get("entities"), StateUpdate.class);
                     FXGL.getGameTimer().runOnceAfter(() -> applyRemote(upd), Duration.ZERO);
                 }
             } catch (Exception e) {

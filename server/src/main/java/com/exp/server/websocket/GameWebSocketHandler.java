@@ -149,10 +149,14 @@ public class GameWebSocketHandler extends TextWebSocketHandler {
                 JsonNode payload = json.get("payload");
 
                 // 判斷 chessId 是否是自己的棋子（暫略）
-                String chessId = payload.get("chessId").asText();
+                String chessId = payload.get("id").asText();
 
                 boolean isPlayer1 = senderToken.equals(match.getPlayer1Id());
                 boolean isValid = (isPlayer1 && chessId.startsWith("p1_")) || (!isPlayer1 && chessId.startsWith("p2_"));
+
+                // System.out.println("收到 chessId = " + chessId);
+                // System.out.println("isPlayer1 = " + isPlayer1);
+                // System.out.println("isValid = " + isValid);
 
                 if (!isValid) {
                     sendToToken(senderToken, "{\"type\":\"error\",\"message\":\"不能操作對手的棋子\"}");

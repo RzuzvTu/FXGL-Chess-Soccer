@@ -1,0 +1,68 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 專案資訊 -->
+    <groupId>com.example</groupId>
+    <artifactId>javafx-demo</artifactId>
+    <version>1.0-SNAPSHOT</version>
+
+    <!-- 設定 Java 和 JavaFX 版本 -->
+<properties>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+</properties>
+
+<dependencies>
+    <!-- JavaFX 控件 -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-controls</artifactId>
+        <version>17.0.13</version>
+    </dependency>
+    <!-- JavaFX FXML -->
+    <dependency>
+        <groupId>org.openjfx</groupId>
+        <artifactId>javafx-fxml</artifactId>
+        <version>17.0.13</version>
+    </dependency>
+    <dependency>
+    <groupId>com.github.almasb</groupId>
+    <artifactId>fxgl</artifactId>
+    <version>17</version>
+    </dependency>
+</dependencies>
+
+<build>
+    <plugins>
+        <!-- Maven Compiler Plugin -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-compiler-plugin</artifactId>
+            <version>3.8.1</version>
+            <configuration>
+                <source>17</source>
+                <target>17</target>
+            </configuration>
+        </plugin>
+
+        <!-- JavaFX Maven Plugin -->
+        <plugin>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-maven-plugin</artifactId>
+            <version>0.0.8</version>
+            <configuration>
+                <mainClass>com.example.App</mainClass>
+                <javafx-sdk>/Users/TT/javafx-sdk-17.0.13</javafx-sdk>
+                <args>
+                    <arg>--module-path</arg>
+                    <arg>/Users/TT/javafx-sdk-17.0.13/lib</arg>
+                    <arg>--add-modules</arg>
+                    <arg>javafx.controls,javafx.fxml</arg>
+                </args>
+            </configuration>
+        </plugin>
+    </plugins>
+</build>
+</project>
